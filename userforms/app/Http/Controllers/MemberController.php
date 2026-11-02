@@ -37,4 +37,31 @@ public function display_all(){
     return redirect()->route('members.create')
                     ->with('success','Member created successfully.');
    }
+
+   public function delete($id){
+    $member = Members::find($id);
+    $member->delete();
+
+    return redirect()->route('members.display_all')
+                    ->with('success','Member deleted successfully.');
+   }
+
+    public function edit($id){
+     $member = Members::find($id);
+     return view('members.edit', compact('member'));
+    }
+
+    public function update(Request $request, $id){
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:members,email,'.$id,
+        ]);
+
+        $member = Members::find($id);
+        $member->update($request->all());
+
+        return redirect()->route('members.display_all')
+                        ->with('success','Member updated successfully.');
+    }
+
 }
